@@ -4,7 +4,7 @@ import os
 from collections import deque
 
 class SpriteObject:
-    async def __init__(self,game, path = 'resources/sprites/static_sprites/candlebra.png', 
+    def __init__(self,game, path = 'resources/sprites/static_sprites/candlebra.png', 
                  pos = (10.5,3.5), scale = 0.7, shift = 0.27):
         self.game = game
         self.player = game.player
@@ -18,7 +18,7 @@ class SpriteObject:
         self.SPRITE_SCALE = scale
         self.SPRITE_HEIGHT_SHIFT = shift
 
-    async def get_sprite_projection(self):
+    def get_sprite_projection(self):
         proj = SCREEN_DIST / self.norm_dist * self.SPRITE_SCALE
         proj_width, proj_height = proj * self.IMAGE_RATIO,proj
         image = pg.transform.scale(self.image, (proj_width, proj_height))
@@ -30,7 +30,7 @@ class SpriteObject:
         self.game.raycasting.objects_to_render.append((self.norm_dist, image, pos))
 
 
-    async def get_sprite(self):
+    def get_sprite(self):
         dx = self.x - self.player.x
         dy = self.y - self.player.y
         self.dx, self.dy = dx,dy
@@ -48,11 +48,11 @@ class SpriteObject:
         if -self.IMAGE_HALF_WIDTH < self.screen_x < (WIDTH + self.IMAGE_HALF_WIDTH) and self.norm_dist > 0.5:
             self.get_sprite_projection()
 
-    async def update(self):
+    def update(self):
         self.get_sprite()
 
 class AnimatedSprite(SpriteObject):
-    async def __init__(self, game, path='resources/sprites/animated_sprites/red_light/0.png',
+    def __init__(self, game, path='resources/sprites/animated_sprites/red_light/0.png',
                   pos=(11.5, 3.5), scale=0.8, shift=0.15, animation_time = 120):
         super().__init__(game, path, pos, scale, shift)
         self.animation_time = animation_time
@@ -62,17 +62,17 @@ class AnimatedSprite(SpriteObject):
         self.animation_trigger = False  
 
 
-    async def update(self):
+    def update(self):
         super().update()
         self.check_animation_time()
         self.animate(self.images)
         
-    async def animate(self,images):
+    def animate(self,images):
         if self.animation_trigger:
             images.rotate(-1)
             self.image = images[0]
     
-    async def check_animation_time(self): 
+    def check_animation_time(self): 
         self.animation_trigger = False
         time_now = pg.time.get_ticks()
         if time_now - self.animation_time_prev > self.animation_time:
@@ -80,7 +80,7 @@ class AnimatedSprite(SpriteObject):
             self.animation_trigger = True
 
 
-    async def get_images(self, path):
+    def get_images(self, path):
         images = deque()
         for file_name in os.listdir(path):
             if os.path.isfile(os.path.join(path,file_name)):

@@ -1,14 +1,14 @@
 from collections import deque
 
 class PathFinding:
-    async def __init__(self,game):
+    def __init__(self,game):
         self.game = game
         self.map = game.map.mini_map
         self.ways = [-1,0], [0,-1], [1,0], [0,1], [-1,-1], [1,-1],[1,1], [-1,1]
         self.graph = {}
         self.get_graph()
 
-    async def get_path(self,start,goal):
+    def get_path(self,start,goal):
         self.visited = self.bfs(start,goal,self.graph)
         path = [goal]
         step = self.visited.get(goal, start)
@@ -19,7 +19,7 @@ class PathFinding:
 
         return path[-1]
 
-    async def bfs(self,start,goal,graph):
+    def bfs(self,start,goal,graph):
         queue = deque([start])
         visited = {start: None}
 
@@ -37,10 +37,10 @@ class PathFinding:
     
 
 
-    async def get_next_nodes(self,x,y):
+    def get_next_nodes(self,x,y):
         return [(x+dx, y + dy) for dx,dy in self.ways if (x+dx, y + dy) not in self.game.map.world_map]
 
-    async def get_graph(self):
+    def get_graph(self):
         for y, row in enumerate(self.map):
             for x, col in enumerate(row):
                 if not col:

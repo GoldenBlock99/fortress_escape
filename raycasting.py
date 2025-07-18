@@ -4,13 +4,13 @@ from settings import *
 
 
 class RayCasting:
-    async def __init__(self,game):
+    def __init__(self,game):
         self.game = game
         self.ray_casting_result = []
         self.objects_to_render = []
         self.textures = self.game.object_renderer.wall_textures
     
-    async def get_objects_to_render(self):
+    def get_objects_to_render(self):
         self.objects_to_render = []
         for ray, values in enumerate(self.ray_casting_result):
             depth, proj_height, texture, offset = values
@@ -32,7 +32,7 @@ class RayCasting:
 
             self.objects_to_render.append((depth, wall_column, wall_pos))
 
-    async def ray_cast(self): 
+    def ray_cast(self): 
         self.ray_casting_result = []
         ox, oy = self.game.player.pos
         x_map, y_map = self.game.player.map_pos
@@ -100,6 +100,6 @@ class RayCasting:
 
             ray_angle += DELTA_ANGLE
 
-    async def update(self):
+    def update(self):
         self.ray_cast()
         self.get_objects_to_render()

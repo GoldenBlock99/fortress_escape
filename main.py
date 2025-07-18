@@ -16,7 +16,7 @@ from pathfinding import *
 
 
 class Game:
-    async def __init__(self):
+    def __init__(self):
         pg.init()
         pg.mouse.set_visible(False)
         self.screen = pg.display.set_mode(RES)
@@ -27,7 +27,7 @@ class Game:
         pg.time.set_timer(self.global_event, 40)
         self.new_game()
         
-    async def new_game(self):
+    def new_game(self):
         self.map = Map(self)
         self.player = Player(self)
         self.object_renderer = ObjectRenderer(self)
@@ -37,7 +37,7 @@ class Game:
         self.sound = Sound(self)
         self.pathfinding = PathFinding(self)
     
-    async def update(self):
+    def update(self):
         self.player.update()
         self.raycasting.update()
         self.object_handler.update()
@@ -47,14 +47,14 @@ class Game:
         pg.display.set_caption('Arena Survival FPS: ' +f'{self.clock.get_fps() :.1f}')
 
 
-    async def draw(self):
+    def draw(self):
         #self.screen.fill('black')
         self.object_renderer.draw()
         self.weapon.draw()
         #self.map.draw()
         #self.player.draw()
 
-    async def check_events(self):
+    def check_events(self):
         self.global_trigger = False
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
@@ -65,16 +65,17 @@ class Game:
             self.player.single_fire_event(event)
 
 
-    async def run(self): 
+    def run(self): 
         while True:
             self.check_events()
             self.update()
             self.draw()
 
-async def main():
-    game = Game()
-    game.run()
-    await asyncio.sleep(0)
+def main():
+    if __name__ == '__main__':
+        game = Game()
+        game.run()
+        
 
-asyncio.run(main())
+
     

@@ -2,7 +2,7 @@ import pygame as pg
 
 
 class Sound:
-    async def __init__(self, game):
+    def __init__(self, game):
         self.game = game
         pg.mixer.init()
         self.path = 'resources/sound/'

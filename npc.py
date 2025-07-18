@@ -3,7 +3,7 @@ from random import *
 
 
 class NPC(AnimatedSprite):
-    async def __init__(self, game, path='resources/sprites/npc/soldier/0.png', pos=(10.5,5.5), scale=0.6, shift=0.38, animation_time=180):
+    def __init__(self, game, path='resources/sprites/npc/soldier/0.png', pos=(10.5,5.5), scale=0.6, shift=0.38, animation_time=180):
         super().__init__(game, path, pos, scale, shift, animation_time)
         self.attack_images = self.get_images(self.path + '/attack')
         self.death_images = self.get_images(self.path + '/death') 
@@ -23,29 +23,29 @@ class NPC(AnimatedSprite):
         self.death_frame_counter = 0
         self.player_search_trigger = False
     
-    async def update(self):
+    def update(self):
         self.check_animation_time()
         self.get_sprite()
         self.run_logic()
         #self.draw_ray_cast()
         
     
-    async def animate_pain(self):
+    def animate_pain(self):
         self.animate(self.pain_images)
         if self.animation_trigger:
             self.pain = False 
 
-    async def check_wall(self,x,y):
+    def check_wall(self,x,y):
         return (x,y) not in self.game.map.world_map
     
-    async def check_wall_collision(self,dx,dy):
+    def check_wall_collision(self,dx,dy):
 
             if self.check_wall(int(self.x+ dx * self.size), int(self.y)):
                 self.x += dx
             if self.check_wall(int(self.x), int(self.y+dy * self.size)):
                 self.y += dy  
 
-    async def movement(self):
+    def movement(self):
         next_pos = self.game.pathfinding.get_path(self.map_pos, self.game.player.map_pos)
         next_x, next_y = next_pos
 
@@ -55,20 +55,20 @@ class NPC(AnimatedSprite):
             dy = math.sin(angle) * self.speed
             self.check_wall_collision(dx,dy)
     
-    async def attack(self):
+    def attack(self):
         if self.animation_trigger:
             self.game.sound.npc_shot.play()
             if random() < self.accuracy:
                 self.game.player.get_damage(self.attack_damage)
 
-    async def animate_death(self):
+    def animate_death(self):
         if not self.alive:
             if self.game.global_trigger and self.death_frame_counter < len(self.death_images) - 1:
                 self.death_images.rotate(-1)
                 self.image = self.death_images[0]
                 self.death_frame_counter +=1
 
-    async def check_hit_in_npc(self):
+    def check_hit_in_npc(self):
         if self.ray_cast_value and self.game.player.shot:
             if HALF_WIDTH - self.sprite_half_width < self.screen_x < HALF_WIDTH + self.sprite_half_width:
                 self.game.sound.npc_pain.play()
@@ -77,12 +77,12 @@ class NPC(AnimatedSprite):
                 self.health -= self.game.weapon.damage
                 self.check_health()
 
-    async def check_health(self):
+    def check_health(self):
         if self.health < 1:
             self.alive = False
             self.game.sound.npc_death.play()
 
-    async def run_logic(self):
+    def run_logic(self):
         if self.alive:
             self.ray_cast_value = self.ray_cast_player_to_npc()
             self.check_hit_in_npc()
@@ -112,10 +112,10 @@ class NPC(AnimatedSprite):
             self.animate_death()
 
     @property
-    async def map_pos(self):
+    def map_pos(self):
         return int(self.x), int(self.y)
     
-    async def ray_cast_player_to_npc(self): 
+    def ray_cast_player_to_npc(self): 
         if self.game.player.map_pos == self.map_pos:
             return True
         
@@ -180,7 +180,7 @@ class NPC(AnimatedSprite):
             return True
         return False
 
-    async def draw_ray_cast(self):
+    def draw_ray_cast(self):
         pg.draw.circle(self.game.screen, 'red', (100 * self.x, 100* self.y),15)
         if self.ray_cast_player_to_npc():
             pg.draw.line(self.game.screen, 'orange', (100 * self.game.player.x, 100* self.game.player.y),
@@ -188,12 +188,12 @@ class NPC(AnimatedSprite):
             
 
 class SoldierNPC(NPC):
-    async def __init__(self, game, path='resources/sprites/npc/soldier/0.png', pos=(10.5, 5.5),
+    def __init__(self, game, path='resources/sprites/npc/soldier/0.png', pos=(10.5, 5.5),
                  scale=0.6, shift=0.38, animation_time=180):
         super().__init__(game, path, pos, scale, shift, animation_time)
 
 class CacoDemonNPC(NPC):
-    async def __init__(self, game, path='resources/sprites/npc/caco_demon/0.png', pos=(10.5, 6.5),
+    def __init__(self, game, path='resources/sprites/npc/caco_demon/0.png', pos=(10.5, 6.5),
                  scale=0.7, shift=0.27, animation_time=250):
         super().__init__(game, path, pos, scale, shift, animation_time)
         self.attack_dist = 1.0
@@ -203,7 +203,7 @@ class CacoDemonNPC(NPC):
         self.accuracy = 0.35
 
 class CyberDemonNPC(NPC):
-    async def __init__(self, game, path='resources/sprites/npc/cyber_demon/0.png', pos=(11.5, 6.0),
+    def __init__(self, game, path='resources/sprites/npc/cyber_demon/0.png', pos=(11.5, 6.0),
                  scale=1.0, shift=0.04, animation_time=210):
         super().__init__(game, path, pos, scale, shift, animation_time)
         self.attack_dist = 6

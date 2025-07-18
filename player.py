@@ -4,7 +4,7 @@ import math
 
 class Player:
 
-    async def __init__(self,game):
+    def __init__(self,game):
         self.game = game
         self.x, self.y = PLAYER_POS
         self.angle = PLAYER_ANGLE
@@ -15,18 +15,18 @@ class Player:
         self.health_recovery_delay = 1000
         self.time_prev = pg.time.get_ticks()
 
-    async def recover_health(self):
+    def recover_health(self):
         if self.check_health_recovery () and self.health < PLAYER_MAX_HP:
             self.health +=1
 
 
-    async def check_health_recovery(self):
+    def check_health_recovery(self):
         time_now = pg.time.get_ticks()
         if time_now - self.time_prev > self.health_recovery_delay:
             self.time_prev = time_now
             return True
     
-    async def check_game_over(self):
+    def check_game_over(self):
         if self.health < 1:
             self.game.object_renderer.game_over()
             pg.display.flip()
@@ -34,20 +34,20 @@ class Player:
             self.game.new_game()
         
 
-    async def get_damage(self,damage):
+    def get_damage(self,damage):
         self.health -= damage
         self.game.object_renderer.player_damage()
         self.game.sound.player_pain.play()
         self.check_game_over()
     
-    async def single_fire_event(self, event):
+    def single_fire_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
             if event.button == 1 and not self.shot and not self.game.weapon.reloading:
                 self.game.sound.shotgun.play()
                 self.shot = True
                 self.game.weapon.reloading = True
 
-    async def movement(self):
+    def movement(self):
         sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
         dx, dy= 0,0
@@ -88,23 +88,23 @@ class Player:
         #    self.angle += PLAYER_ROT_SPEED * self.game.delta_time
         self.angle %= math.tau
 
-    async def draw(self):
+    def draw(self):
         #pg.draw.line(self.game.screen, 'yellow', (self.x * 100, self.y * 100),
         #            (self.x * 100+WIDTH * math.cos(self.angle),
         #            self.y * 100+WIDTH * math.sin(self.angle)), 2)
         pg.draw.circle(self.game.screen, 'green', (self.x * 100, self.y * 100), 15)
 
-    async def check_wall(self,x,y):
+    def check_wall(self,x,y):
         return (x,y) not in self.game.map.world_map
     
-    async def check_wall_collision(self,dx,dy):
+    def check_wall_collision(self,dx,dy):
         scale = PLAYER_SIZE_SCALE / self.game.delta_time
         if self.check_wall(int(self.x+ dx * scale), int(self.y)):
             self.x += dx
         if self.check_wall(int(self.x), int(self.y+dy * scale)):
             self.y += dy  
 
-    async def mouse_control(self):
+    def mouse_control(self):
         mx, my = pg.mouse.get_pos()
         if mx < MOUSE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT:
             pg.mouse.set_pos([HALF_WIDTH, HALF_HEIGHT])
@@ -112,15 +112,15 @@ class Player:
         self.rel = max(-MOUSE_MAX_REL, min(MOUSE_MAX_REL, self.rel))
         self.angle += self.rel * MOUSE_SENSITIVITY * self.game.delta_time
         
-    async def update(self):
+    def update(self):
         self.movement()
         self.mouse_control()
         self.recover_health()
 
     @property
-    async def pos(self):
+    def pos(self):
         return self.x, self.y
     
     @property
-    async def map_pos(self):
+    def map_pos(self):
         return int(self.x), int(self.y)
